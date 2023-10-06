@@ -15,8 +15,7 @@ namespace personsList
                 !listBox1.Items.Contains(textBox2.Text) && (Gender.SelectedItem != null))
             {
 
-                Person p1 = new Person(textBox1.Text, textBox2.Text, Gender.SelectedItem.ToString(), Convert.ToInt32(textBox3.Text));
-                personsList.Add(p1);
+                Person p1 = new Person(textBox1.Text, textBox2.Text, Gender.SelectedItem.ToString(), Convert.ToInt32(textBox3.Text), monthCalendar1.SelectionStart);               personsList.Add(p1);
                 listBox1.Items.Add(p1);
             }
             else
@@ -48,13 +47,14 @@ namespace personsList
 
         }
 
-        private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
-        {
-
-        }
-
+    
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
+        }
+
+        private void monthCalendar1_DateChanged_1(object sender, DateRangeEventArgs e)
+        {
+            //MessageBox.Show("DateChanged: " + monthCalendar1.SelectionRange.ToString());
         }
     }
 }
