@@ -7,7 +7,6 @@ namespace personsList
         {
             InitializeComponent();
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(textBox3.Text) && !string.IsNullOrWhiteSpace(textBox2.Text) &&
