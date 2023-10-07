@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+
 namespace personsList
 {
     public partial class Form1 : Form
@@ -14,8 +16,7 @@ namespace personsList
                 !listBox1.Items.Contains(textBox2.Text) && (Gender.SelectedItem != null))
             {
 
-                Person p1 = new Person(textBox1.Text, textBox2.Text, Gender.SelectedItem.ToString(), Convert.ToInt32(textBox3.Text));
-                personsList.Add(p1);
+                Person p1 = new Person(textBox1.Text, textBox2.Text, Gender.SelectedItem.ToString(), Convert.ToInt32(textBox3.Text), monthCalendar1.SelectionStart); personsList.Add(p1);
                 listBox1.Items.Add(p1);
             }
             else
@@ -47,13 +48,45 @@ namespace personsList
 
         }
 
-        private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
+
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void monthCalendar1_DateChanged_1(object sender, DateRangeEventArgs e)
+        {
+            //MessageBox.Show("DateChanged: " + monthCalendar1.SelectionRange.ToString());
+        }
+
+        private void label7_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        private void ProductsList_SelectedIndexChanged(object sender, EventArgs e)
         {
+
+        }
+
+        private void closeButton_Click(object sender, EventArgs e)
+        {
+            panel1.Hide();
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void ShowInfoButton_Click(object sender, EventArgs e)
+        {
+            panel1.Show();
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+            int ind = listBox1.SelectedIndex;
+            textBox4.Text = String.Format(personsList[ind].Name);
         }
     }
 }

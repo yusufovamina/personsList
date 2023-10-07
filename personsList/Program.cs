@@ -5,15 +5,15 @@ namespace personsList
             public  string Surname { get; set; }
             public  int Age { get; set; }
             public string Gender { get; set; }
-      
-        public Person(string name, string surname, string gender, int age)
+        public  DateTime Birthday { get; set; }
+        public Person(string name, string surname, string gender, int age, DateTime birthday)
             {
              Name = name; Surname = surname;
-                Gender = gender; Age = age;  
+                Gender = gender; Age = age; Birthday = birthday;
             }
         public override string ToString()
         {
-            return $"{Name} {Surname}, {Age} years old, {Gender}";
+            return $"{Name} {Surname}, {Age} years old({Birthday.Day}/{Birthday.Month}/{Birthday.Year}), {Gender}";
         }
     }
     internal static class Program
