@@ -81,17 +81,24 @@ namespace personsList
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
             int index = listBox1.SelectedIndex;
-            if (index != -1 && !textBox5.Enabled)
+            if (index != -1 )
             {
-
-                textBox4_SetText();
-                textBox5_SetText();
-                textBox6_SetText();
-                genderComboBox_Set();
-                monthCalendar2_Set();
-
+                if (!textBox5.Enabled)
+                {
+                    textBox4_SetText();
+                    textBox5_SetText();
+                    textBox6_SetText();
+                    genderComboBox_Set();
+                    monthCalendar2_Set();
+                }
             }
+            else
+            {
+                textBox4.Clear(); textBox5.Clear(); textBox6.Clear();
+                comboBoxGender.SelectedIndex = -1;
+                monthCalendar2.SetDate(DateTime.Now);
             }
+        }
 
         private void monthCalendar2_Set()
         {
@@ -104,7 +111,7 @@ namespace personsList
         private void genderComboBox_Set()
         {
             int index = listBox1.SelectedIndex;
-            if(index != -1)
+            if (index != -1)
             {
                 switch (personsList[index].Gender)
                 {
@@ -122,7 +129,18 @@ namespace personsList
         }
         private void ShowInfoButton_Click(object sender, EventArgs e)
         {
-            panel1.Show();
+            if (textBox5.Enabled)
+            {
+                EditButton_Click(sender, e);
+            }
+            if (listBox1.SelectedIndex != -1)
+            {
+                panel1.Show();
+            }
+            else
+            {
+                MessageBox.Show("Choose item to see infotmation!");
+            }
         }
 
         private void textBox4_TextChanged(object sender, EventArgs e)
@@ -135,10 +153,10 @@ namespace personsList
             int ind = listBox1.SelectedIndex;
             if (ind != -1)
             {
-                
-                    textBox4.Text = personsList[ind].Name;
-                    textBox4.ForeColor = Color.Gray;
-                
+
+                textBox4.Text = personsList[ind].Name;
+                textBox4.ForeColor = Color.Gray;
+
             }
             textBox4.ForeColor = Color.Black;
 
@@ -150,9 +168,9 @@ namespace personsList
             int ind = listBox1.SelectedIndex;
             if (ind != -1)
             {
-                    textBox5.Text = personsList[ind].Surname;
-                    textBox5.ForeColor = Color.Gray;
-                }
+                textBox5.Text = personsList[ind].Surname;
+                textBox5.ForeColor = Color.Gray;
+            }
             textBox5.ForeColor = Color.Black;
         }
 
@@ -162,9 +180,9 @@ namespace personsList
             int ind = listBox1.SelectedIndex;
             if (ind != -1)
             {
-                    textBox6.Text = personsList[ind].Age.ToString();
-                    textBox6.ForeColor = Color.Gray;
-                
+                textBox6.Text = personsList[ind].Age.ToString();
+                textBox6.ForeColor = Color.Gray;
+
             }
             textBox6.ForeColor = Color.Black;
         }
@@ -208,7 +226,7 @@ namespace personsList
                 MessageBox.Show("No item selected or invalid selection.");
             }
             panel1.Hide();
-            EditButton_Click(sender,e);
+            EditButton_Click(sender, e);
         }
     }
 }

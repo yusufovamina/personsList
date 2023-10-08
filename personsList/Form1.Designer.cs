@@ -181,13 +181,14 @@
             // 
             // ShowInfoButton
             // 
+            ShowInfoButton.BackColor = Color.Plum;
             ShowInfoButton.Location = new Point(25, 508);
             ShowInfoButton.Margin = new Padding(3, 4, 3, 4);
             ShowInfoButton.Name = "ShowInfoButton";
             ShowInfoButton.Size = new Size(137, 48);
             ShowInfoButton.TabIndex = 15;
             ShowInfoButton.Text = "Show Info";
-            ShowInfoButton.UseVisualStyleBackColor = true;
+            ShowInfoButton.UseVisualStyleBackColor = false;
             ShowInfoButton.Click += ShowInfoButton_Click;
             // 
             // label5
@@ -332,34 +333,37 @@
             // 
             // SaveButton
             // 
+            SaveButton.BackColor = Color.MediumSpringGreen;
             SaveButton.Location = new Point(571, 445);
             SaveButton.Margin = new Padding(3, 4, 3, 4);
             SaveButton.Name = "SaveButton";
             SaveButton.Size = new Size(96, 52);
             SaveButton.TabIndex = 2;
             SaveButton.Text = "Save";
-            SaveButton.UseVisualStyleBackColor = true;
+            SaveButton.UseVisualStyleBackColor = false;
             SaveButton.Click += SaveButton_Click;
             // 
             // EditButton
             // 
+            EditButton.BackColor = Color.FromArgb(255, 255, 128);
             EditButton.Location = new Point(573, 138);
             EditButton.Margin = new Padding(3, 4, 3, 4);
             EditButton.Name = "EditButton";
             EditButton.Size = new Size(94, 51);
             EditButton.TabIndex = 1;
             EditButton.Text = "Edit";
-            EditButton.UseVisualStyleBackColor = true;
+            EditButton.UseVisualStyleBackColor = false;
             EditButton.Click += EditButton_Click;
             // 
             // closeButton
             // 
             closeButton.BackColor = Color.Crimson;
-            closeButton.ForeColor = SystemColors.ControlLightLight;
-            closeButton.Location = new Point(650, 4);
+            closeButton.Font = new Font("Segoe UI Symbol", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            closeButton.ForeColor = SystemColors.ActiveCaptionText;
+            closeButton.Location = new Point(646, 4);
             closeButton.Margin = new Padding(3, 4, 3, 4);
             closeButton.Name = "closeButton";
-            closeButton.Size = new Size(31, 33);
+            closeButton.Size = new Size(35, 33);
             closeButton.TabIndex = 0;
             closeButton.Text = "X";
             closeButton.UseVisualStyleBackColor = false;
