@@ -1,5 +1,6 @@
 namespace personsList
 {
+    [Serializable]
     class Product
     {
         public  string Name { get; set; }
@@ -14,7 +15,7 @@ namespace personsList
             return $"{Name} - {Price}$";
         }
     }
-    
+    [Serializable]
     class Person
         {
             public  string Name { get; set; }
@@ -22,7 +23,7 @@ namespace personsList
             public  int Age { get; set; }
             public string Gender { get; set; }
         public  DateTime Birthday { get; set; }
-        public List <Product> Products { get; set; }=null;
+        public List <Product> Products { get; set; }
         public Person(string name, string surname, string gender, int age, DateTime birthday)
             {
              Name = name; Surname = surname;

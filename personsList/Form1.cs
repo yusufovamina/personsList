@@ -1,23 +1,30 @@
 using System;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 using System.Windows.Forms;
 
 namespace personsList
 {
     public partial class Form1 : Form
     {
+        private string dataFilePath = "data.dat";
         private List<Person> personsList = new List<Person>();
         private List<Product> productsList = new List<Product>();
         public Form1()
         {
             InitializeComponent();
+            LoadData();  
         }
 
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveData();
 
 
+        }
 
-
-        private void closeButton_Click(object sender, EventArgs e)
+            private void closeButton_Click(object sender, EventArgs e)
         {
             ShowPanel.Hide(); EditButton_Click(sender, e);
         }
@@ -94,11 +101,64 @@ namespace personsList
         }
 
 
+        private void LoadData()
+        {   try
+                {
+                    using (FileStream fileStream = new FileStream(dataFilePath, FileMode.Open))
+                    {
+                        BinaryFormatter formatter = new BinaryFormatter();
+                        personsList = (List<Person>)formatter.Deserialize(fileStream);
+                        productsList = (List<Product>)formatter.Deserialize(fileStream);
+                    UpdateListBoxes();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error loading data: " + ex.Message);
+                }
+            }
+        
+
+        private void SaveData()
+        {
+            try
+            {
+                using (FileStream fileStream = new FileStream(dataFilePath, FileMode.Create))
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    formatter.Serialize(fileStream, personsList);
+                    formatter.Serialize(fileStream, productsList);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saving data: " + ex.Message);
+            }
+        }
+        private void UpdateListBoxes()
+        {
+            personsListBoxMain.Items.Clear();
+            Persons_ListBoxPanel.Items.Clear();
+
+            foreach (Person person in personsList)
+            {
+                personsListBoxMain.Items.Add(person);
+                Persons_ListBoxPanel.Items.Add(person);
+            }
+
+            productsListBox1.Items.Clear();
+            products_ListBox.Items.Clear();
+
+            foreach (Product product in productsList)
+            {
+                productsListBox1.Items.Add(product);
+                products_ListBox.Items.Add(product);
+            }
+        }
         private void Form1_Load(object sender, EventArgs e)
         {
             ShowPanel.Hide(); SellPanel.Hide(); EditButton_Click(sender, e);
             ShowInfoProductPanel.Hide(); EditProductsButton_Click(sender, e);
-
         }
 
 
@@ -149,15 +209,18 @@ namespace personsList
 
         private void PersonsShowButton_Click(object sender, EventArgs e)
         {
-            PersonsPanel.BringToFront();
+            productsPanel.Hide();
+            SellPanel.Hide();
+            PersonsPanel.Show();
         }
 
 
 
         private void SellingsShowButton_Click(object sender, EventArgs e)
         {
-
-            SellPanel.BringToFront();
+            PersonsPanel.Hide();
+            productsPanel.Hide();
+            SellPanel.Show();
         }
 
 
@@ -177,6 +240,7 @@ namespace personsList
                 textBox9.Clear(); textBox8.Clear(); textBox7.Clear();
                 GenderComboBoxMain.SelectedIndex = -1;
                 monthCalendarMain.SetDate(DateTime.Now);
+                SaveData();
             }
             else
             {
@@ -218,12 +282,25 @@ namespace personsList
         {
 
         }
+        private void ProductsList_Set()
+        {
+            int ind = personsListBoxMain.SelectedIndex;
+            if (ind != -1 && personsList[ind].Products.Count != 0)
+            {
+                for (int i = 0; i < personsList[ind].Products.Count; i++)
+                {
+                  ProductsList.Text = personsList[ind].Products[0].ToString();
 
+                }
+
+            }
+        }
         private void ShowPanel_Paint(object sender, PaintEventArgs e)
         {
             int index = personsListBoxMain.SelectedIndex;
             if (index != -1)
             {
+                if (personsList[index].Products!=null){ProductsList_Set();}
                 if (!textBox4.Enabled)
                 {
                     textBox4_SetText();
@@ -231,6 +308,7 @@ namespace personsList
                     textBox6_SetText();
                     genderComboBox_Set();
                     monthCalendar2_Set();
+
                 }
             }
             else
@@ -250,7 +328,8 @@ namespace personsList
 
         private void products_ListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int index = Persons_ListBoxPanel.SelectedIndex;
+            int index = products_ListBox.SelectedIndex;
+            ProductsName.Text = productsList[index].Name; ProductsPrice.Text = productsList[index].Price.ToString();
         }
 
         private void label10_Click(object sender, EventArgs e)
@@ -260,7 +339,9 @@ namespace personsList
 
         private void ProductsShowButton_Click(object sender, EventArgs e)
         {
-            productsPanel.BringToFront();
+            PersonsPanel.Hide();
+            SellPanel.Hide();
+            productsPanel.Show();
         }
 
         private void AddProductButton_Click(object sender, EventArgs e)
@@ -273,7 +354,7 @@ namespace personsList
                 productsList.Add(product);
                 productsListBox1.Items.Add(product);
                 products_ListBox.Items.Add(product);
-
+                SaveData();
                 textBoxProductName.Clear(); TextBoxProductsPrice.Clear();
             }
             else
@@ -289,7 +370,7 @@ namespace personsList
 
         private void ShowInfoProductButton_Click(object sender, EventArgs e)
         {
-            
+
             ShowInfoProductPanel.Show();
         }
 
@@ -321,7 +402,7 @@ namespace personsList
                 textBox1.ForeColor = Color.Gray;
 
             }
-            textBox2.ForeColor = Color.Black;
+            textBox1.ForeColor = Color.Black;
 
         }
 
@@ -330,7 +411,7 @@ namespace personsList
             int index = productsListBox1.SelectedIndex;
             if (index != -1)
             {
-                if (!textBox2.Enabled)
+                if (!textBox2.Enabled && !textBox1.Enabled)
                 {
                     textBox2_SetText();
                     textBox1_SetText();
@@ -359,23 +440,62 @@ namespace personsList
             if (selectedIndex >= 0 && selectedIndex < productsListBox1.Items.Count)
             {
                 productsListBox1.Items.RemoveAt(selectedIndex);
+                products_ListBox.Items.RemoveAt(selectedIndex);
                 productsList.RemoveAt(selectedIndex);
                 Product product2 = new Product(textBox2.Text, Convert.ToDouble(textBox1.Text));
                 productsList.Insert(selectedIndex, product2);
+                products_ListBox.Items.Insert(selectedIndex, product2);
                 productsListBox1.Items.Insert(selectedIndex, product2);
             }
             else
             {
                 MessageBox.Show("No item selected or invalid selection.");
             }
-            ShowPanel.Hide();
+            ShowInfoProductPanel.Hide();
             EditButton_Click(sender, e);
         }
 
         private void productsPanel_Paint(object sender, PaintEventArgs e)
         {
-           
-           
+
+
+        }
+
+        private void DeleteProductButton_Click(object sender, EventArgs e)
+        {
+            if (productsListBox1.SelectedIndex != -1)
+            {
+                int selectedIndex = productsListBox1.SelectedIndex;
+                productsListBox1.Items.RemoveAt(selectedIndex);
+                productsList.RemoveAt(selectedIndex);
+            }
+            else
+            {
+                MessageBox.Show("Element was not selected!");
+            }
+        }
+
+        private void SellButtonPanel_Click(object sender, EventArgs e)
+        {
+            int pers_ind = Persons_ListBoxPanel.SelectedIndex;
+            int product_ind = products_ListBox.SelectedIndex;
+
+            if (pers_ind != -1 && product_ind != -1)
+            {
+                if (pers_ind < personsList.Count && product_ind < productsList.Count)
+                {
+                    personsList[pers_ind].Products.Add(productsList[product_ind]);
+                    MessageBox.Show("Successful operation");
+                }
+                else
+                {
+                    MessageBox.Show("Invalid selection.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a person and a product.");
+            }
         }
     }
 }
