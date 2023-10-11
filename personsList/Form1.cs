@@ -14,7 +14,7 @@ namespace personsList
         public Form1()
         {
             InitializeComponent();
-            LoadData();  
+            LoadData();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -24,7 +24,7 @@ namespace personsList
 
         }
 
-            private void closeButton_Click(object sender, EventArgs e)
+        private void closeButton_Click(object sender, EventArgs e)
         {
             ShowPanel.Hide(); EditButton_Click(sender, e);
         }
@@ -102,22 +102,23 @@ namespace personsList
 
 
         private void LoadData()
-        {   try
+        {
+            try
+            {
+                using (FileStream fileStream = new FileStream(dataFilePath, FileMode.Open))
                 {
-                    using (FileStream fileStream = new FileStream(dataFilePath, FileMode.Open))
-                    {
-                        BinaryFormatter formatter = new BinaryFormatter();
-                        personsList = (List<Person>)formatter.Deserialize(fileStream);
-                        productsList = (List<Product>)formatter.Deserialize(fileStream);
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    personsList = (List<Person>)formatter.Deserialize(fileStream);
+                    productsList = (List<Product>)formatter.Deserialize(fileStream);
                     UpdateListBoxes();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error loading data: " + ex.Message);
                 }
             }
-        
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading data: " + ex.Message);
+            }
+        }
+
 
         private void SaveData()
         {
@@ -278,18 +279,15 @@ namespace personsList
             }
         }
 
-        private void PersonsPanel_Paint(object sender, PaintEventArgs e)
-        {
 
-        }
-        private void ProductsList_Set()
+        private void BillsList_Set()
         {
             int ind = personsListBoxMain.SelectedIndex;
-            if (ind != -1 && personsList[ind].Products.Count != 0)
+            if (ind != -1 && personsList[ind].Bills.Count != 0)
             {
-                for (int i = 0; i < personsList[ind].Products.Count; i++)
+                for (int i = 0; i < personsList[ind].Bills.Count; i++)
                 {
-                  ProductsList.Text = personsList[ind].Products[0].ToString();
+                    ProductsList.Text = personsList[ind].Bills[i].ToString();
 
                 }
 
@@ -300,7 +298,7 @@ namespace personsList
             int index = personsListBoxMain.SelectedIndex;
             if (index != -1)
             {
-                if (personsList[index].Products!=null){ProductsList_Set();}
+                if (personsList[index].Bills != null) { BillsList_Set(); }
                 if (!textBox4.Enabled)
                 {
                     textBox4_SetText();
@@ -323,13 +321,23 @@ namespace personsList
         private void Persons_ListBoxPanel_SelectedIndexChanged(object sender, EventArgs e)
         {
             int index = Persons_ListBoxPanel.SelectedIndex;
-            customersName.Text = personsList[index].Name; customersSurname.Text = personsList[index].Surname;
+            customersName.Text = personsList[index].Name;
+            customersSurname.Text = personsList[index].Surname;
+            personsCart_ListBox.Items.Clear();
+            if (index != -1 && personsList[index].Cart != null)
+            {
+                for (int i = 0; i < personsList[index].Cart.Count; i++)
+                {
+                    personsCart_ListBox.Items.Add(personsList[i].Cart);
+                }
+            }
         }
 
         private void products_ListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             int index = products_ListBox.SelectedIndex;
-            ProductsName.Text = productsList[index].Name; ProductsPrice.Text = productsList[index].Price.ToString();
+            ProductsName.Text = productsList[index].Name;
+            ProductsPrice.Text = productsList[index].Price.ToString();
         }
 
         private void label10_Click(object sender, EventArgs e)
@@ -484,18 +492,47 @@ namespace personsList
             {
                 if (pers_ind < personsList.Count && product_ind < productsList.Count)
                 {
-                    personsList[pers_ind].Products.Add(productsList[product_ind]);
+                    Person p3 = personsList[pers_ind];
+                    Product product = productsList[product_ind];
+                    p3.Cart.Add(product);
                     MessageBox.Show("Successful operation");
                 }
                 else
                 {
-                    MessageBox.Show("Invalid selection.");
+                    MessageBox.Show("Invalid selection");
                 }
             }
             else
             {
-                MessageBox.Show("Please select a person and a product.");
+                MessageBox.Show("Please select a person and a product");
             }
+        }
+
+        private void AddToCart_Click(object sender, EventArgs e)
+        {
+            int pers_ind = Persons_ListBoxPanel.SelectedIndex;
+            int product_ind = products_ListBox.SelectedIndex;
+            if (pers_ind != -1 && product_ind != -1)
+            {
+                personsCart_ListBox.Items.Add(productsList[product_ind]);
+                personsList[pers_ind].Cart.Add(productsList[product_ind]);
+            }
+
+        }
+
+        private void ClearCartButton_Click(object sender, EventArgs e)
+        {
+            int pers_ind = Persons_ListBoxPanel.SelectedIndex;
+            personsCart_ListBox.Items.Clear();
+            personsList[pers_ind].Cart.Clear();
+        }
+
+        private void DeleteItemFromCart_Click(object sender, EventArgs e)
+        {
+            int pers_ind = Persons_ListBoxPanel.SelectedIndex;
+            int bill_ind=personsCart_ListBox.SelectedIndex;
+            personsCart_ListBox.Items.RemoveAt(bill_ind);
+            personsList[pers_ind].Cart.RemoveAt(bill_ind);
         }
     }
 }
