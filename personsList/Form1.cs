@@ -3,11 +3,82 @@ using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
+using System.Xml.Schema;
 
 namespace personsList
 {
     public partial class Form1 : Form
     {
+        [Serializable]
+        class Cart
+        {
+            public List<Product> Products { get; set; }
+            public double total { get; set; }
+        }
+
+        [Serializable]
+        class Bill
+        {
+            public Person Customer { get; set; }
+            public List<Product> Products { get; set; }
+            public double totalSumm { get; set; }
+            public DateTime Time { get; set; }
+            public int Id { get; set; }
+            public Bill(Person customer, double total, DateTime time, int id)
+            {
+                Customer = customer;
+                totalSumm = total;
+                this.Time = time;
+                this.Id = id;
+                Products = customer.currentCart.Products;
+            }
+            public override string ToString()
+            {
+                return $"{Id} - {Time}";
+            }
+        }
+
+        [Serializable]
+        class Product
+        {
+            public string Name { get; set; }
+            public double Price { get; set; }
+
+            public Product(string name, double price)
+            {
+                Name = name;
+                Price = price;
+
+            }
+            public override string ToString()
+            {
+                return $"{Name} - {Price}$";
+            }
+        }
+        [Serializable]
+        class Person
+        {
+            public string Name { get; set; }
+            public string Surname { get; set; }
+            public int Age { get; set; }
+            public string Gender { get; set; }
+            public DateTime Birthday { get; set; }
+            public List<Bill> Bills { get; set; }
+            public Cart currentCart { get; set; }
+            public Person(string name, string surname, string gender, int age, DateTime birthday)
+            {
+                Name = name;
+                Surname = surname;
+                Gender = gender;
+                Age = age;
+                Birthday = birthday;
+                currentCart = new Cart();
+            }
+            public override string ToString()
+            {
+                return $"{Name} {Surname}, {Age} years old({Birthday.Day}/{Birthday.Month}/{Birthday.Year}), {Gender}";
+            }
+        }
         private string dataFilePath = "data.dat";
         private List<Person> personsList = new List<Person>();
         private List<Product> productsList = new List<Product>();
@@ -324,11 +395,11 @@ namespace personsList
             customersName.Text = personsList[index].Name;
             customersSurname.Text = personsList[index].Surname;
             personsCart_ListBox.Items.Clear();
-            if (index != -1 && personsList[index].Cart != null)
+            if (index != -1 && personsList[index].currentCart.Products != null)
             {
-                for (int i = 0; i < personsList[index].Cart.Count; i++)
+                for (int i = 0; i < personsList[index].currentCart.Products.Count; i++)
                 {
-                    personsCart_ListBox.Items.Add(personsList[i].Cart);
+                    personsCart_ListBox.Items.Add(personsList[i].currentCart.Products);
                 }
             }
         }
@@ -494,7 +565,7 @@ namespace personsList
                 {
                     Person p3 = personsList[pers_ind];
                     Product product = productsList[product_ind];
-                    p3.Cart.Add(product);
+                    p3.currentCart.Products.Add(product);
                     MessageBox.Show("Successful operation");
                 }
                 else
@@ -515,24 +586,39 @@ namespace personsList
             if (pers_ind != -1 && product_ind != -1)
             {
                 personsCart_ListBox.Items.Add(productsList[product_ind]);
-                personsList[pers_ind].Cart.Add(productsList[product_ind]);
+                personsList[pers_ind].currentCart.Products.Add(productsList[product_ind]);
+                label20.Text = personsList[pers_ind].currentCart.total.ToString();
             }
-
         }
 
         private void ClearCartButton_Click(object sender, EventArgs e)
         {
             int pers_ind = Persons_ListBoxPanel.SelectedIndex;
             personsCart_ListBox.Items.Clear();
-            personsList[pers_ind].Cart.Clear();
+            personsList[pers_ind].currentCart.Products.Clear();
         }
 
         private void DeleteItemFromCart_Click(object sender, EventArgs e)
         {
             int pers_ind = Persons_ListBoxPanel.SelectedIndex;
-            int bill_ind=personsCart_ListBox.SelectedIndex;
+            int bill_ind = personsCart_ListBox.SelectedIndex;
             personsCart_ListBox.Items.RemoveAt(bill_ind);
-            personsList[pers_ind].Cart.RemoveAt(bill_ind);
+            personsList[pers_ind].currentCart.Products.RemoveAt(bill_ind);
         }
+
+        private void FinishOrderButton_Click(object sender, EventArgs e)
+        {
+            int pers_ind = Persons_ListBoxPanel.SelectedIndex;
+            int bill_ind = personsCart_ListBox.SelectedIndex;
+            double total = 0;
+            for (int i = 0; i < personsList[pers_ind].currentCart.Products.Count; i++)
+            {
+                total += personsList[pers_ind].currentCart.Products[i].Price;
+            }
+            Bill bill = new Bill(personsList[pers_ind], total, DateTime.Now, new Random().Next());
+
+        }
+
+        
     }
 }

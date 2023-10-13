@@ -101,6 +101,7 @@
             personsListBoxMain = new ListBox();
             label13 = new Label();
             ShowInfoButton = new Button();
+            label20 = new Label();
             ShowPanel.SuspendLayout();
             ShowInfoProductPanel.SuspendLayout();
             SellPanel.SuspendLayout();
@@ -353,6 +354,7 @@
             // SellPanel
             // 
             SellPanel.BackColor = Color.CornflowerBlue;
+            SellPanel.Controls.Add(label20);
             SellPanel.Controls.Add(FinishOrderButton);
             SellPanel.Controls.Add(ClearCartButton);
             SellPanel.Controls.Add(DeleteItemFromCart);
@@ -374,7 +376,7 @@
             SellPanel.Dock = DockStyle.Fill;
             SellPanel.Location = new Point(0, 0);
             SellPanel.Name = "SellPanel";
-            SellPanel.Size = new Size(821, 507);
+            SellPanel.Size = new Size(821, 520);
             SellPanel.TabIndex = 19;
             // 
             // FinishOrderButton
@@ -388,6 +390,7 @@
             FinishOrderButton.TabIndex = 19;
             FinishOrderButton.Text = "Finish order";
             FinishOrderButton.UseVisualStyleBackColor = false;
+            FinishOrderButton.Click += FinishOrderButton_Click;
             // 
             // ClearCartButton
             // 
@@ -430,7 +433,7 @@
             // 
             personsCart_ListBox.FormattingEnabled = true;
             personsCart_ListBox.ItemHeight = 15;
-            personsCart_ListBox.Location = new Point(343, 326);
+            personsCart_ListBox.Location = new Point(344, 326);
             personsCart_ListBox.Name = "personsCart_ListBox";
             personsCart_ListBox.Size = new Size(335, 154);
             personsCart_ListBox.TabIndex = 15;
@@ -688,7 +691,7 @@
             splitContainer1.Panel2.Controls.Add(SellPanel);
             splitContainer1.Panel2.Controls.Add(productsPanel);
             splitContainer1.Panel2.Controls.Add(PersonsPanel);
-            splitContainer1.Size = new Size(944, 507);
+            splitContainer1.Size = new Size(944, 520);
             splitContainer1.SplitterDistance = 119;
             splitContainer1.TabIndex = 20;
             // 
@@ -926,12 +929,25 @@
             ShowInfoButton.UseVisualStyleBackColor = false;
             ShowInfoButton.Click += ShowInfoButton_Click_1;
             // 
+            // label20
+            // 
+            label20.AutoSize = true;
+            label20.BackColor = Color.MediumVioletRed;
+            label20.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            label20.ForeColor = SystemColors.ControlLight;
+            label20.Location = new Point(469, 486);
+            label20.Name = "label20";
+            label20.Size = new Size(20, 25);
+            label20.TabIndex = 20;
+            label20.Text = " - ";
+            
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.MidnightBlue;
-            ClientSize = new Size(944, 507);
+            ClientSize = new Size(944, 520);
             Controls.Add(splitContainer1);
             Margin = new Padding(3, 2, 3, 2);
             Name = "Form1";
@@ -1028,5 +1044,6 @@
         private Button AddToCart;
         private Button FinishOrderButton;
         private Button ClearCartButton;
+        private Label label20;
     }
 }
